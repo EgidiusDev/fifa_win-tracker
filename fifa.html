@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIFA 25 Win Tracker</title>
+    <style>
+        /* Embedded CSS */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .player {
+            margin: 20px 0;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            transition: background-color 0.3s;
+            width: calc(50% - 15px); /* Adjust width to fit button sizing */
+        }
+
+        .add-btn {
+            background-color: #4CAF50;
+        }
+
+        .add-btn:hover {
+            background-color: #45a049;
+        }
+
+        .add-btn:active {
+            background-color: #388e3c;
+        }
+
+        .subtract-btn {
+            background-color: #f44336;
+            margin-left: 30px;
+        }
+
+        .subtract-btn:hover {
+            background-color: #e53935;
+        }
+
+        .subtract-btn:active {
+            background-color: #d32f2f;
+        }
+
+        #reset {
+            background-color: #2196F3;
+            margin-top: 20px;
+            width: calc(100% - 40px);
+        }
+
+        #reset:hover {
+            background-color: #1e88e5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>FIFA 25 Win Tracker</h1>
+        
+        <div class="player" id="ventrix">
+            <h2>Ventrix</h2>
+            <button class="add-btn" onclick="recordWin('ventrix')">Add Win</button>
+            <button class="subtract-btn" onclick="subtractWin('ventrix')">Subtract Win</button>
+            <p>Wins: <span id="wins-ventrix">0</span></p>
+            <p>Win Percentage: <span id="percentage-ventrix">0%</span></p>
+        </div>
+
+        <div class="player" id="egidius">
+            <h2>Egidius</h2> <!-- Changed name here -->
+            <button class="add-btn" onclick="recordWin('egidius')">Add Win</button>
+            <button class="subtract-btn" onclick="subtractWin('egidius')">Subtract Win</button>
+            <p>Wins: <span id="wins-egidius">0</span></p>
+            <p>Win Percentage: <span id="percentage-egidius">0%</span></p>
+        </div>
+
+        <button id="reset" onclick="reset()">Reset</button>
+    </div>
+
+    <script>
+        // JavaScript to handle win tracking and persistence
+        let wins = {
+            ventrix: parseInt(localStorage.getItem('wins-ventrix')) || 0,
+            egidius: parseInt(localStorage.getItem('wins-egidius')) || 0
+        };
+
+        function recordWin(player) {
+            // Increase the win count for the selected player
+            wins[player]++;
+            updateDisplay();
+            saveWins();
+        }
+
+        function subtractWin(player) {
+            // Decrease the win count for the selected player if greater than 0
+            if (wins[player] > 0) {
+                wins[player]--;
+                updateDisplay();
+                saveWins();
+            }
+        }
+
+        function updateDisplay() {
+            // Get the total wins of both players
+            const totalWins = wins.ventrix + wins.egidius;
+
+            // Calculate and display wins and win percentages for each player
+            const ventrixWins = wins.ventrix;
+            const egidiusWins = wins.egidius;
+
+            const ventrixPercentage = totalWins > 0 ? ((ventrixWins / totalWins) * 100).toFixed(2) : 0;
+            const egidiusPercentage = totalWins > 0 ? ((egidiusWins / totalWins) * 100).toFixed(2) : 0;
+
+            document.getElementById('wins-ventrix').textContent = ventrixWins;
+            document.getElementById('percentage-ventrix').textContent = ventrixPercentage + '%';
+
+            document.getElementById('wins-egidius').textContent = egidiusWins;
+            document.getElementById('percentage-egidius').textContent = egidiusPercentage + '%';
+        }
+
+        function saveWins() {
+            // Save the current win counts to localStorage
+            localStorage.setItem('wins-ventrix', wins.ventrix);
+            localStorage.setItem('wins-egidius', wins.egidius);
+        }
+
+        function reset() {
+            // Reset the win counts for both players
+            wins.ventrix = 0;
+            wins.egidius = 0;
+            saveWins();
+            updateDisplay();
+        }
+
+        // Update the display with initial values on load
+        updateDisplay();
+    </script>
+</body>
+</html>
